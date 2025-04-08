@@ -12,6 +12,8 @@ const darkTheme = createTheme({
 
 function App() {
     const [todos, setTodos] = useState([]);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     useEffect(() => {
         fetch("/src/assets/data.json")
@@ -36,6 +38,16 @@ function App() {
                 { task: inputValue, priority: priority, isDone: false },
             ]);
             setInputValue("");
+            const newTodo = {
+                task: inputValue,
+                priority: priority,
+                isDone: false,
+            };
+
+            setSnackbarMessage(
+                `"${newTodo.task}" 할 일이 추가되었습니다.`
+            );
+            setSnackbarOpen(true);
         }
     };
     const handleToggleTodo = (index) => {
@@ -89,6 +101,20 @@ function App() {
                         todos={todos}
                         handleToggleTodo={handleToggleTodo}
                     />
+                    <Snackbar
+                        open={snackbarOpen}
+                        autoHideDuration={3000}
+                        onClose={() => setSnackbarOpen(false)}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    >
+                        <Alert
+                            onClose={() => setSnackbarOpen(false)}
+                            severity="success"
+                            sx={{ width: '100%' }}
+                        >
+                            {snackbarMessage}
+                        </Alert>
+                    </Snackbar>
                 </Container>
             </Box>
         </ThemeProvider>
